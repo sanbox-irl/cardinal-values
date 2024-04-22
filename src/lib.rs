@@ -8,7 +8,6 @@
 #![warn(clippy::todo)]
 #![warn(clippy::undocumented_unsafe_blocks)]
 #![warn(missing_docs)]
-#![no_std]
 
 use core::ops;
 
@@ -79,6 +78,22 @@ impl Cardinal {
             Cardinal::North => 90.0,
             Cardinal::West => 180.0,
             Cardinal::South => 270.0,
+        }
+    }
+
+    /// This returns a cardinal as a best guess for floats. If you give an exactly
+    /// divisible by 90 degrees, it'll work just the way you expect.
+    pub fn from_angle(angle: f32) -> Cardinal {
+        let angle = angle.rem_euclid(360.0);
+
+        if (45.0..135.0).contains(&angle) {
+            Cardinal::North
+        } else if (135.0..225.0).contains(&angle) {
+            Cardinal::West
+        } else if (225.0..315.0).contains(&angle) {
+            Cardinal::South
+        } else {
+            Cardinal::East
         }
     }
 
